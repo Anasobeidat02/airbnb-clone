@@ -5,6 +5,7 @@ import axios from "axios";
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [redirect, setRedirect] = useState(false);
 
   async function handelLoginSubmit(ev) {
     ev.preventDefault();
@@ -14,14 +15,26 @@ export default function LoginPage() {
         { email, password },
         { withCredentials: true }
       );
+
       alert("User logged in successfully !");
 
       // await axios.post("/login", {
       //   email,
       //   password,
       // });
-    } catch {
-      alert("Error logging in, please try again");
+    } catch (error) {
+      // عرض تفاصيل الخطأ
+      if (error.response) {
+        // إذا كان هناك استجابة من السيرفر مع رسالة خطأ
+        alert(`Error: ${error.response.data.message || "Login failed"}`);
+      } else if (error.request) {
+        // إذا لم يكن هناك استجابة من السيرفر
+        alert("No response from server. Please try again later.");
+      } else {
+        // أي خطأ آخر (خطأ في الكود مثلاً)
+        alert(`Request error: ${error.message}`);
+      }
+      console.error("Login error:", error);
     }
   }
   return (
