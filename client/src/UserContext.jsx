@@ -5,13 +5,19 @@ import axios from "axios";
 export const Usercontext = createContext({});
 export function UserContextProvider({ children }) {
   const [user, setUser] = useState(null);
-  useEffect(() => { 
-    if(!user){
-      axios.get("/profile") // ارسال طلب للسيرفر لجلب بيانات المستخدم
+  const [ready, setReady] = useState(false);
+  useEffect(() => {
+    if (!user) {
+      axios
+        .get("http://localhost:4000/profile", { withCredentials: true })
+        .then(({ data }) => {
+          setUser(data);
+          setReady(true);
+        });
     }
   }, []);
   return (
-    <Usercontext.Provider value={{ user, setUser }}>
+    <Usercontext.Provider value={{ user, setUser, ready, setReady }}>
       {children}
     </Usercontext.Provider>
   );
