@@ -1,27 +1,26 @@
-import { Link } from "react-router-dom";
-import { useState } from "react";
+import { Link, Navigate } from "react-router-dom";
+import { useContext, useState } from "react";
 import axios from "axios";
+import { Usercontext } from "../UserContext";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [redirect, setRedirect] = useState(false);
 
+  const { setUser } = useContext(Usercontext);
   async function handelLoginSubmit(ev) {
     ev.preventDefault();
     try {
-      await axios.post(
+      const { data } = await axios.post(
         "http://localhost:4000/login",
         { email, password },
-        { withCredentials: true }
+        { withCredentials: true } // إرسال الكوكيز مع الطلب
       );
-
+      setUser(data); // تحديث الحالة العالمية
       alert("User logged in successfully !");
+      setRedirect(true);  // تحويل المستخدم إلى الصفحة الرئيسية
 
-      // await axios.post("/login", {
-      //   email,
-      //   password,
-      // });
     } catch (error) {
       // عرض تفاصيل الخطأ
       if (error.response) {
@@ -36,6 +35,9 @@ export default function LoginPage() {
       }
       console.error("Login error:", error);
     }
+  }
+  if (redirect) {
+    return <Navigate to="/" />;
   }
   return (
     <div className="mt-4 grow flex items-center justify-around">

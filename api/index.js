@@ -5,10 +5,12 @@ const User = require("./models/user.js");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const bcryptSalt = bcrypt.genSaltSync(10);
+const cookieParser = require("cookie-parser");
 const jwtSecret = "BZ3mNu8AoLstIU2X";
 
 const app = express();
 app.use(express.json());
+app.use(cookieParser());
 app.use(
   cors({
     origin: "http://localhost:5173",
@@ -20,7 +22,10 @@ require("dotenv").config();
 //BZ3mNu8AoLstIU2X
 
 // console.log(process.env.MONGO_URL)
-mongoose.connect(process.env.MONGO_URL);
+mongoose
+  .connect(process.env.MONGO_URL)
+  .then(() => console.log("✅ Connected to MongoDB"))
+  .catch((err) => console.error("❌ MongoDB Connection Error:", err));
 
 app.get("/test", (req, res) => {
   res.json("Hello, World!");
@@ -53,7 +58,7 @@ app.post("/login", async (req, res) => {
         {},
         (err, token) => {
           if (err) throw err;
-          res.cookie("token", token).json("pass ok");
+          res.cookie("token", token).json(userDoc);
           // res.cookie('token','').json('pass ok');
         }
       );
@@ -67,16 +72,17 @@ app.post("/login", async (req, res) => {
   // res.json(userDoc);
 });
 
+app.get("/profile", (req, res) => {
+  const { token } = req.cookies;
+  // res.json({ token });
+  if (token) {
+    jwt.verify(token, jwtSecret, {}, (err, user) => {
+      if (err) throw err;
+      res.json(user);
+    });
+  } else {
+    res.status(401).json({ message: "Unauthorized" });
+  }
+});
+
 app.listen(4000);
-
-// if (userDoc) {
-//   const passOk = bcrypt.compareSync(password, userDoc.password);
-//   if (passOk) {
-//     res.json("pass ok");
-//   } else {
-//     res.status(422).json("invalid password");
-//   }
-
-// } else {
-//   res.json("not found");
-// }
