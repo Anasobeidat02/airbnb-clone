@@ -16,6 +16,7 @@ export default function placesPage() {
   const [checkInTime, setCheckInTime] = useState("");
   const [checkOutTime, setCheckOutTime] = useState("");
   const [maxGuests, setMaxGuests] = useState(1);
+  const [redirect, setRedirect] = useState("");
   function inputHeader(text) {
     return <h2 className="text-2xl mt-4">{text}</h2>;
   }
@@ -55,6 +56,27 @@ export default function placesPage() {
       });
   }
 
+  function addNewPlace(ev) {
+    ev.preventDefault();
+    const placeData = {
+      title,
+      address,
+      addedPhotos,
+      description,
+      perks,
+      extraInfo,
+      checkInTime,
+      checkOutTime,
+      maxGuests,
+    };
+    axios.post("/places", placeData);
+    setRedirect("/account/places");
+  }
+
+  if (redirect) {
+    return <Navigate to={redirect} />;
+  }
+
   return (
     <div>
       {action !== "new" && (
@@ -83,7 +105,7 @@ export default function placesPage() {
       )}
       {action === "new" && (
         <div>
-          <form action="">
+          <form action="" onSubmit={addNewPlace}>
             {preInput("Title")}
             <input
               type="text"
