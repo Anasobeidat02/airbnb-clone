@@ -1,9 +1,17 @@
 import React from "react";
 export default function Perks({ selected, onChange }) {
+  function handleCbClick(ev) {
+    const { checked, name } = ev.target;
+    if (checked) {
+      onChange([...selected, name]);
+    } else {
+      onChange([...selected.filter((s) => s !== name)]);
+    }
+  }
   return (
     <>
       <label className="border p-4 flex rounded-2xl gap-2 items-center cursor-pointer">
-        <input type="checkbox" name="" id="" />
+        <input type="checkbox" id="" name="wifi" onChange={handleCbClick} />
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
@@ -22,7 +30,7 @@ export default function Perks({ selected, onChange }) {
         <span>WiFi</span>
       </label>
       <label className="border p-4 flex rounded-2xl gap-2 items-center cursor-pointer">
-        <input type="checkbox" name="" id="" />
+        <input type="checkbox" id="" name="parking" onChange={handleCbClick} />
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
@@ -41,7 +49,7 @@ export default function Perks({ selected, onChange }) {
         <span>Free Parking</span>
       </label>
       <label className="border p-4 flex rounded-2xl gap-2 items-center cursor-pointer">
-        <input type="checkbox" name="" id="" />
+        <input type="checkbox" id="" name="tv" onChange={handleCbClick} />
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
@@ -60,7 +68,7 @@ export default function Perks({ selected, onChange }) {
         <span>TV</span>
       </label>
       <label className="border p-4 flex rounded-2xl gap-2 items-center cursor-pointer">
-        <input type="checkbox" name="" id="" />
+        <input type="checkbox" name="pets" id="" onChange={handleCbClick} />
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
@@ -73,7 +81,7 @@ export default function Perks({ selected, onChange }) {
         <span>Pets</span>
       </label>
       <label className="border p-4 flex rounded-2xl gap-2 items-center cursor-pointer">
-        <input type="checkbox" name="" id="" />
+        <input type="checkbox" name="entrance" id="" onChange={handleCbClick} />
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"

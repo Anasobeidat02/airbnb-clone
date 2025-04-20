@@ -22,7 +22,7 @@ app.use(
   })
 );
 require("dotenv").config();
-//3.28
+//3.36
 //BZ3mNu8AoLstIU2X
 
 // console.log(process.env.MONGO_URL)
@@ -110,15 +110,19 @@ app.post("/upload-by-link", async (req, res) => {
   res.json(newName);
 });
 const photosMiddleware = multer({ dest: "uploads/" });
+
 app.post("/upload", photosMiddleware.array("photos", 100), (req, res) => {
   const uploadedFiles = [];
+
   for (let i = 0; i < req.files.length; i++) {
     const { path, originalname } = req.files[i];
     const parts = originalname.split(".");
     const ext = parts[parts.length - 1];
     const newPath = path + "." + ext;
     fs.renameSync(path, newPath);
-    uploadedFiles.push(newPath.replace("uploads/", ""));
+
+    // فقط اسم الملف بدون المسار
+    uploadedFiles.push(newPath.split("/").pop());
   }
 
   res.json(uploadedFiles);

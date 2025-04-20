@@ -47,7 +47,10 @@ export default function placesPage() {
       .then((res) => {
         const { data: filenames } = res;
         setAddedPhotos((prev) => {
-          return [...prev, ...filenames];
+          return [
+            ...prev,
+            ...filenames.map((name) => name.replace(/^uploads\//, "")),
+          ];
         });
       });
   }
@@ -114,13 +117,10 @@ export default function placesPage() {
             <div className=" mt-2 gap-2 grid grid-cols-3 lg:grid-cols-6 md:grid-cols-4 ">
               {addedPhotos.length > 0 &&
                 addedPhotos.map((link) => (
-                  <div className="h-32 flex ">
+                  <div className="h-32 flex " key={link}>
                     <img
                       className="rounded-2xl w-full object-cover  "
-                      src={`http://localhost:4000/uploads/${link.replace(
-                        /^uploads\//,
-                        ""
-                      )}`}
+                      src={`http://localhost:4000/uploads/${link}`}
                       alt="Uploaded"
                     />
                   </div>
